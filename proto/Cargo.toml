@@ -1,0 +1,35 @@
+# 1. Re-write Cargo.toml cleanly
+cat << 'EOF' > Cargo.toml
+[package]
+name = "solana_transfers"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+substreams = "0.5"
+substreams-solana = "0.4"
+prost = "0.11"
+bs58 = "0.5"
+
+[build-dependencies]
+prost-build = "0.11"
+EOF
+
+# 2. Add build.rs to handle Protobuf compilation via Cargo
+cat << 'EOF' > build.rs
+fn main() {
+    prost_build::compile_protos(&["proto/transfers.proto"], &["proto/"]).unwrap();
+}
+EOF
+
+# 3. Build the WASM target directly
+cargo build --target wasm32-unknown-unknown --release
+
+# 4. Package the Substreams module into an .spkg file
+substreams pack
+
+# 5. Run the stream against Solana mainnet blocks 385870151 to 385870156
+substreams run -e mainnet.sol.streamingfast.io:443 substreams.yaml map_transfers -s 385870151 -t 385870157
