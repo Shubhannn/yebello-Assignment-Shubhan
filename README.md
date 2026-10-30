@@ -148,6 +148,9 @@ substreams-sink-sql run "$DSN" substreams.yaml \
 
 ## 📊 Sample JSON Output
 
+<img width="795" height="916" alt="image" src="https://github.com/user-attachments/assets/9f7d980c-98fd-4313-a860-e53b307a9ff2" />
+
+
 ```json
 {
   "@module": "map_transfers",
